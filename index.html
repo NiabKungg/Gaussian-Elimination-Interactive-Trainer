@@ -52,7 +52,7 @@
             position: relative;
             display: inline-flex;
             align-items: center;
-            padding: 4px 8px;
+            padding: 6px 10px;
         }
         .matrix-bracket::before, .matrix-bracket::after {
             content: "";
@@ -75,7 +75,7 @@
             border-bottom-right-radius: 6px;
         }
         .augmented-divider {
-            border-right: 2px dashed #94a3b8;
+            border-left: 2px dashed #94a3b8;
         }
     </style>
 </head>
@@ -85,10 +85,10 @@
 
     <!-- Application Structure Plan:
         The application is structured into four main functional sections to maximize clarity and learning outcomes:
-        1. Concept & Theory (หลักการขจัดแบบเก๊าส์): Introduces the Augmented Matrix, Elementary Row Operations (ERO), Row Echelon Form (REF), and Back-substitution with concise dynamic cards.
-        2. Interactive Step-by-Step Examples (โจทย์ตัวอย่างพร้อมวิธีทำ): Interactive stepper for both 2x2 and 3x3 standard examples, highlighting modified matrix rows and mathematical explanations at each step.
-        3. Practice & Self-Assessment (โจทย์ซ้อมมือและแบบทดสอบ): Interactive problem solver allowing students to type answers for 2x2 and 3x3 practice problems, request step hints, or unlock full derivation.
-        4. Live Solver & 2D Line Visualizer (เครื่องมือแก้โจทย์และกราฟ 2D): Users can input custom linear equations to generate row operations dynamically. For 2x2 systems, a HTML5 Canvas 2D plot renders line intersections visually.
+        1. Concept & Theory: Introduces the Augmented Matrix, Elementary Row Operations (ERO), Row Echelon Form (REF), and Back-substitution with concise dynamic cards.
+        2. Interactive Step-by-Step Examples: Interactive stepper for both 2x2 and 3x3 standard examples, highlighting modified matrix rows and mathematical explanations at each step.
+        3. Practice & Self-Assessment: Interactive problem solver allowing students to type answers for 2x2 and 3x3 practice problems, request step hints, or unlock full derivation.
+        4. Live Solver & 2D Line Visualizer: Users can input custom linear equations to generate row operations dynamically. For 2x2 systems, a HTML5 Canvas 2D plot renders line intersections visually.
         5. Operations Complexity Analytics: Includes a Chart.js bar graph comparing theoretical vs actual operations across matrix dimensions.
     -->
 
@@ -171,8 +171,8 @@
                             ใช้ 3 กฎทองเพื่อแปลงเมทริกซ์โดยไม่เปลี่ยนคำตอบของระบบสมการ:
                         </p>
                         <ul class="text-xs text-slate-600 space-y-1.5 font-medium">
-                            <li class="flex items-center gap-1.5"><span class="text-teal-600 font-bold">1.</span> สลับแถว (<span class="font-mono text-slate-800 font-semibold">R<sub>i</sub> ↔ R<sub>j</sub></span>)</li>
-                            <li class="flex items-center gap-1.5"><span class="text-teal-600 font-bold">2.</span> คูณแถวด้วยสเกลาร์ <span class="font-mono text-slate-800 font-semibold">c ≠ 0</span> (<span class="font-mono text-slate-800 font-semibold">c R<sub>i</sub></span>)</li>
+                            <li class="flex items-center gap-1.5"><span class="text-teal-600 font-bold">1.</span> สลับแถว (<span class="font-mono text-slate-800 font-semibold">R<sub>i</sub> &#8596; R<sub>j</sub></span>)</li>
+                            <li class="flex items-center gap-1.5"><span class="text-teal-600 font-bold">2.</span> คูณแถวด้วยสเกลาร์ <span class="font-mono text-slate-800 font-semibold">c &#8800; 0</span> (<span class="font-mono text-slate-800 font-semibold">c R<sub>i</sub></span>)</li>
                             <li class="flex items-center gap-1.5"><span class="text-teal-600 font-bold">3.</span> บวกพหุคูณแถว (<span class="font-mono text-slate-800 font-semibold">R<sub>i</sub> + c R<sub>j</sub></span>)</li>
                         </ul>
                     </div>
@@ -187,7 +187,7 @@
                             เมื่อได้รูปขั้นบันไดสามเหลี่ยมบนแล้ว ให้แทนค่าตัวแปรจากแถวล่างสุดย้อนกลับขึ้นไปหาตัวแปรแถวบน
                         </p>
                         <div class="bg-white p-3 rounded-lg border border-slate-200 text-center font-mono-code text-xs text-amber-900 font-semibold">
-                            z = k → y + c(z) = m → x = ...
+                            z = k &#8594; y + c(z) = m &#8594; x = ...
                         </div>
                     </div>
                 </div>
@@ -714,7 +714,7 @@
                 let cellsHtml = '';
                 for (let c = 0; c < numCols; c++) {
                     const isAugmentedVal = (c === numCols - 1);
-                    const borderClass = isAugmentedVal ? 'augmented-divider pl-3 pr-2 font-bold text-indigo-700' : 'px-2.5';
+                    const borderClass = isAugmentedVal ? 'augmented-divider pl-3 pr-2 font-bold text-indigo-700' : 'px-2.5 text-slate-800';
                     const formattedVal = Number.isInteger(matrix[r][c]) ? matrix[r][c] : Number(matrix[r][c]).toFixed(2);
                     cellsHtml += `<td class="py-1.5 ${borderClass} text-center">${formattedVal}</td>`;
                 }
