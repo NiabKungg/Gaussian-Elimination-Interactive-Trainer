@@ -126,6 +126,9 @@
                 <button onclick="switchTab('solver')" id="tab-solver" class="tab-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all text-indigo-200 hover:text-white hover:bg-indigo-800/50">
                     📐 เครื่องมือแก้โจทย์ & กราฟ
                 </button>
+                <button onclick="switchTab('inverse')" id="tab-inverse" class="tab-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all text-indigo-200 hover:text-white hover:bg-indigo-800/50">
+                    🔄 หาอินเวิร์ส (A⁻¹)
+                </button>
             </nav>
         </div>
     </header>
@@ -145,7 +148,7 @@
                     ด้วย **การดำเนินการตามแถวขั้นมูลฐาน (Elementary Row Operations: ERO)** จากนั้นจึงหาคำตอบด้วย **การแทนค่าย้อนกลับ (Back-substitution)**
                 </p>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
                     <!-- Concept Card 1 -->
                     <div class="bg-slate-50 rounded-xl p-5 border border-slate-200 hover:border-indigo-300 transition-colors">
                         <div class="w-10 h-10 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold mb-3">
@@ -188,6 +191,20 @@
                         </p>
                         <div class="bg-white p-3 rounded-lg border border-slate-200 text-center font-mono-code text-xs text-amber-900 font-semibold">
                             z = k &#8594; y + c(z) = m &#8594; x = ...
+                        </div>
+                    </div>
+
+                    <!-- Concept Card 4: Matrix Inverse -->
+                    <div class="bg-slate-50 rounded-xl p-5 border border-slate-200 hover:border-indigo-300 transition-colors">
+                        <div class="w-10 h-10 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center font-bold mb-3">
+                            4
+                        </div>
+                        <h3 class="font-bold text-slate-900 text-base mb-2">การหาอินเวิร์ส (Gauss-Jordan)</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed mb-3">
+                            แปลงเมทริกซ์แต่งเติม <span class="font-mono font-bold text-purple-700">[A | I]</span> ด้วย ERO จนฝั่งซ้ายเป็น <span class="font-mono font-bold text-purple-700">I</span> ฝั่งขวาจะกลายเป็น <span class="font-mono font-bold text-purple-700">A<sup>-1</sup></span>
+                        </p>
+                        <div class="bg-white p-3 rounded-lg border border-slate-200 text-center font-mono-code text-xs text-purple-900 font-semibold">
+                            [ A | I ] &#8594; [ I | A<sup>-1</sup> ]
                         </div>
                     </div>
                 </div>
@@ -463,6 +480,100 @@
             </div>
         </section>
 
+
+        <!-- ================= SECTION 5: MATRIX INVERSE SOLVER ================= -->
+        <section id="section-inverse" class="space-y-6 hidden">
+            <div class="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-100">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
+                            <span>🔄</span> เครื่องมือหาเมทริกซ์ผกผันด้วย Gauss-Jordan Elimination (A⁻¹)
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-1">
+                            ป้อนเมทริกซ์จัตุรัส A เพื่อสร้างเมทริกซ์แต่งเติม [A | I] และดำเนินการตามแถวเพื่อแปลงเป็น [I | A⁻¹]
+                        </p>
+                    </div>
+
+                    <!-- Dimension Switcher for Inverse -->
+                    <div class="inline-flex p-1 bg-slate-100 rounded-xl border border-slate-200">
+                        <button id="inverse-btn-2x2" onclick="setInverseDim(2)" class="px-4 py-2 rounded-lg text-xs font-bold transition-all bg-white text-indigo-700 shadow-sm">
+                            เมทริกซ์ 2 × 2
+                        </button>
+                        <button id="inverse-btn-3x3" onclick="setInverseDim(3)" class="px-4 py-2 rounded-lg text-xs font-bold transition-all text-slate-600 hover:text-slate-900">
+                            เมทริกซ์ 3 × 3
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                    <!-- Left: Input Form -->
+                    <div class="lg:col-span-5 space-y-5">
+                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-5">
+                            <h3 class="font-bold text-slate-900 text-sm mb-3">ป้อนสมาชิกของเมทริกซ์ A:</h3>
+                            
+                            <div id="inverse-input-grid" class="space-y-3">
+                                <!-- Dynamic inputs for Matrix A generated by JS -->
+                            </div>
+
+                            <div class="flex gap-2 mt-5">
+                                <button onclick="runInverseSolver()" class="flex-1 bg-purple-600 hover:bg-purple-700 text-white font-bold py-2.5 px-4 rounded-lg text-xs shadow transition-colors flex items-center justify-center gap-1">
+                                    <span>⚡</span> คำนวณหา A⁻¹
+                                </button>
+                                <button onclick="resetInverseInputs()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2.5 px-3 rounded-lg text-xs transition-colors">
+                                    รีเซ็ต
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Presets for Inverse -->
+                        <div class="flex flex-wrap gap-2 text-xs">
+                            <span class="text-slate-400 font-bold self-center">ตัวอย่างลัด:</span>
+                            <button onclick="loadInversePreset('2x2')" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md border border-slate-300">
+                                2x2 ทั่วไป
+                            </button>
+                            <button onclick="loadInversePreset('3x3')" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md border border-slate-300">
+                                3x3 ทั่วไป
+                            </button>
+                            <button onclick="loadInversePreset('singular')" class="px-2.5 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-md border border-rose-200 font-medium">
+                                ไม่มีอินเวิร์ส (Det = 0)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Right: Summary Card & Formula -->
+                    <div class="lg:col-span-7 bg-purple-50/50 border border-purple-100 rounded-xl p-6 space-y-4">
+                        <h3 class="font-bold text-purple-950 text-sm flex items-center gap-2">
+                            <span>💡</span> หลักการ Gauss-Jordan Elimination สำหรับหา Matrix Inverse
+                        </h3>
+                        <div class="text-xs text-slate-700 leading-relaxed space-y-2">
+                            <p>
+                                1. นำเมทริกซ์ $A$ มาแต่งเติมด้วยเมทริกซ์เอกลักษณ์ $I_n$ จะได้เมทริกซ์ผสานขนาด $n \times 2n$ ในรูป $[A \mid I_n]$
+                            </p>
+                            <p>
+                                2. ดำเนินการตามแถวขั้นมูลฐาน (ERO) ทั้งกับฝั่งซ้ายและฝั่งขวาพร้อมกัน จนกระทั่งฝั่งซ้ายแปลงกลายเป็นเมทริกซ์เอกลักษณ์ $I_n$
+                            </p>
+                            <p>
+                                3. เมื่อทำเสร็จสิ้น เมทริกซ์ทางฝั่งขวาคือ <b>เมทริกซ์ผกผัน $A^{-1}$</b> ที่ต้องการ
+                            </p>
+                        </div>
+                        <div id="inverse-final-result-box" class="hidden bg-white p-4 rounded-lg border border-purple-200 text-center space-y-2">
+                            <!-- Injected final A^-1 matrix & verification check -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Generated Steps Container -->
+                <div id="inverse-results-container" class="mt-8 space-y-4 border-t border-slate-100 pt-6">
+                    <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                        <span>📋</span> ขั้นตอนการแปลงเมทริกซ์แต่งเติม [A | I] → [I | A⁻¹]
+                    </h3>
+                    <div id="inverse-steps-output" class="space-y-4">
+                        <!-- Output steps dynamically injected here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <!-- Footer -->
@@ -476,137 +587,13 @@
 
     <!-- ================= JAVASCRIPT LOGIC ================= -->
     <script>
-        // --- DATA STRUCTURES & EXAMPLES ---
-        const exampleData = {
-            '2x2': {
-                eqText: "2x + 3y = 8  |  x - 2y = -3",
-                steps: [
-                    {
-                        title: "ขั้นตอนที่ 1: เขียนเมทริกซ์แต่งเติม (Augmented Matrix)",
-                        op: "เริ่มต้น",
-                        matrix: [[2, 3, 8], [1, -2, -3]],
-                        desc: "แปลงระบบสมการ 2x2 ให้อยู่ในรูปเมทริกซ์ [A | B] เพื่อเตรียมดำเนินการตามแถว",
-                        note: "แถวที่ 1 แทนสมการ 2x + 3y = 8 และแถวที่ 2 แทนสมการ x - 2y = -3",
-                        highlightRow: -1
-                    },
-                    {
-                        title: "ขั้นตอนที่ 2: สลับแถวที่ 1 และ 2 (Row Swapping)",
-                        op: "R1 ↔ R2",
-                        matrix: [[1, -2, -3], [2, 3, 8]],
-                        desc: "ทำการสลับ R1 ↔ R2 เพื่อให้สมาชิกนำในแถวแรก (Pivot) เป็น 1 ช่วยให้คำนวณขั้นถัดไปได้ง่าย",
-                        note: "การสลับแถวทำให้อัตราส่วน pivot เป็น 1 โดยไม่ต้องใช้เศษส่วนในขั้นนี้",
-                        highlightRow: 0
-                    },
-                    {
-                        title: "ขั้นตอนที่ 3: กำจัดตัวแปร x ในแถวที่ 2",
-                        op: "R2 → R2 - 2(R1)",
-                        matrix: [[1, -2, -3], [0, 7, 14]],
-                        desc: "นำ 2 เท่าของแถวที่ 1 ไปลบออกจากแถวที่ 2 เพื่อให้สมาชิกใต้สมาชิกนำกลายเป็น 0",
-                        note: "คำนวณ: 2 - 2(1) = 0, 3 - 2(-2) = 7, และ 8 - 2(-3) = 14",
-                        highlightRow: 1
-                    },
-                    {
-                        title: "ขั้นตอนที่ 4: ปรับสมาชิกนำของแถวที่ 2 ให้เป็น 1",
-                        op: "R2 → (1/7)R2",
-                        matrix: [[1, -2, -3], [0, 1, 2]],
-                        desc: "คูณแถวที่ 2 ด้วย 1/7 (หรือหารด้วย 7) เพื่อให้สมาชิกนำของแถวที่ 2 เป็น 1 ได้เมทริกซ์ขั้นบันได (REF)",
-                        note: "ตอนนี้เมทริกซ์อยู่ในรูป Row Echelon Form แล้ว!",
-                        highlightRow: 1
-                    },
-                    {
-                        title: "ขั้นตอนที่ 5: การแทนค่าย้อนกลับ (Back-substitution)",
-                        op: "แทนค่าย้อนกลับ",
-                        matrix: [[1, -2, -3], [0, 1, 2]],
-                        desc: "จากแถวที่ 2 จะได้ y = 2 | นำ y = 2 ไปแทนในแถวที่ 1: x - 2(2) = -3  =>  x - 4 = -3  =>  x = 1",
-                        note: "คำตอบของระบบสมการคือ x = 1, y = 2 หรือ (x, y) = (1, 2)",
-                        highlightRow: -1
-                    }
-                ]
-            },
-            '3x3': {
-                eqText: "x + 2y - z = 3  |  2x + 5y + 2z = 11  |  3x - y + 3z = 8",
-                steps: [
-                    {
-                        title: "ขั้นตอนที่ 1: เขียนเมทริกซ์แต่งเติม (Augmented Matrix)",
-                        op: "เริ่มต้น",
-                        matrix: [[1, 2, -1, 3], [2, 5, 2, 11], [3, -1, 3, 8]],
-                        desc: "เขียนเมทริกซ์แต่งเติมขนาด 3x4 จากระบบสมการ 3 ตัวแปรที่กำหนด",
-                        note: "สังเกตว่าสมาชิกนำในแถวที่ 1 มีค่าเป็น 1 อยู่แล้ว จึงเริ่มกำจัดหลักแรกได้ทันที",
-                        highlightRow: -1
-                    },
-                    {
-                        title: "ขั้นตอนที่ 2: กำจัดหลักแรกในแถวที่ 2 และ 3 ให้เป็น 0",
-                        op: "R2 → R2 - 2R1 , R3 → R3 - 3R1",
-                        matrix: [[1, 2, -1, 3], [0, 1, 4, 5], [0, -7, 6, -1]],
-                        desc: "ใช้แถวที่ 1 กำจัดสมาชิกหลักแรกของแถวที่ 2 และแถวที่ 3 ให้กลายเป็นศูนย์",
-                        note: "R2: [2,5,2,11] - 2[1,2,-1,3] = [0,1,4,5] | R3: [3,-1,3,8] - 3[1,2,-1,3] = [0,-7,6,-1]",
-                        highlightRow: 1
-                    },
-                    {
-                        title: "ขั้นตอนที่ 3: กำจัดหลักที่สองในแถวที่ 3 ให้เป็น 0",
-                        op: "R3 → R3 + 7R2",
-                        matrix: [[1, 2, -1, 3], [0, 1, 4, 5], [0, 0, 34, 34]],
-                        desc: "นำ 7 เท่าของแถวที่ 2 ไปบวกเข้ากับแถวที่ 3 เพื่อกำจัดตำแหน่ง (-7) ให้เป็นศูนย์",
-                        note: "คำนวณแถวที่ 3: -7 + 7(1) = 0, 6 + 7(4) = 34, -1 + 7(5) = 34",
-                        highlightRow: 2
-                    },
-                    {
-                        title: "ขั้นตอนที่ 4: ปรับสมาชิกนำแถวที่ 3 ให้เป็น 1",
-                        op: "R3 → (1/34)R3",
-                        matrix: [[1, 2, -1, 3], [0, 1, 4, 5], [0, 0, 1, 1]],
-                        desc: "คูณแถวที่ 3 ด้วย 1/34 เพื่อทำให้สมาชิกนำกลายเป็น 1 สมบูรณ์",
-                        note: "เมทริกซ์แปลงเสร็จสมบูรณ์ในรูปขั้นบันไดตามแถว (Row Echelon Form)",
-                        highlightRow: 2
-                    },
-                    {
-                        title: "ขั้นตอนที่ 5: การแทนค่าย้อนกลับ (Back-substitution)",
-                        op: "แทนค่าย้อนกลับ",
-                        matrix: [[1, 2, -1, 3], [0, 1, 4, 5], [0, 0, 1, 1]],
-                        desc: "1) แถว 3: z = 1\n2) แถว 2: y + 4(1) = 5 => y = 1\n3) แถว 1: x + 2(1) - (1) = 3 => x + 1 = 3 => x = 2",
-                        note: "คำตอบของระบบสมการคือ (x, y, z) = (2, 1, 1)",
-                        highlightRow: -1
-                    }
-                ]
-            }
-        };
-
-        const practiceData = {
-            '2x2': {
-                eqText: "3x + y = 7  \n  2x - 4y = -14",
-                ans: { x: 1, y: 4 },
-                hint: "1. เริ่มจากสลับแถวหรือหาร R2 ด้วย 2 เพื่อให้ง่ายขึ้น เช่น R2 → (1/2)R2 จะได้ [1, -2 | -7]\n2. สลับ R1 ↔ R2 เพื่อให้ได้ 1 เป็นสมาชิกนำ\n3. กำจัด 3 ในแถวสองด้วย R2 → R2 - 3R1",
-                sol: `<b>ขั้นตอนการทำโดยละเอียด:</b><br>
-                      1. เมทริกซ์แต่งเติม: [[3, 1 | 7], [2, -4 | -14]]<br>
-                      2. R2 → (1/2)R2: [[3, 1 | 7], [1, -2 | -7]]<br>
-                      3. R1 ↔ R2: [[1, -2 | -7], [3, 1 | 7]]<br>
-                      4. R2 → R2 - 3R1: [[1, -2 | -7], [0, 7 | 28]]<br>
-                      5. R2 → (1/7)R2: [[1, -2 | -7], [0, 1 | 4]]<br>
-                      6. แทนค่าย้อนกลับ: y = 4; x - 2(4) = -7 => x = 1<br>
-                      <b>คำตอบ:</b> x = 1, y = 4`
-            },
-            '3x3': {
-                eqText: "x - y + 2z = 5  \n  2x + y - z = 1  \n  x + 2y + z = 8",
-                ans: { x: 1, y: 2, z: 3 },
-                hint: "1. สมาชิกนำแถวแรกเป็น 1 อยู่แล้ว\n2. กำจัดหลักแรกของ R2 และ R3: R2 → R2 - 2R1 และ R3 → R3 - R1\n3. กำจัดหลักสองของ R3: R3 → R3 - R2 จะได้ 4z = 12 สรุป z = 3",
-                sol: `<b>ขั้นตอนการทำโดยละเอียด:</b><br>
-                      1. เมทริกซ์แต่งเติม: [[1, -1, 2 | 5], [2, 1, -1 | 1], [1, 2, 1 | 8]]<br>
-                      2. R2 → R2 - 2R1 และ R3 → R3 - R1:<br>
-                         [[1, -1, 2 | 5], [0, 3, -5 | -9], [0, 3, -1 | 3]]<br>
-                      3. R3 → R3 - R2:<br>
-                         [[1, -1, 2 | 5], [0, 3, -5 | -9], [0, 0, 4 | 12]]<br>
-                      4. R3 → (1/4)R3 => z = 3<br>
-                      5. แถว 2: 3y - 5(3) = -9 => 3y = 6 => y = 2<br>
-                      6. แถว 1: x - 2 + 2(3) = 5 => x + 4 = 5 => x = 1<br>
-                      <b>คำตอบ:</b> x = 1, y = 2, z = 3`
-            }
-        };
-
         // --- GLOBAL STATE ---
         let currentTab = 'concept';
         let currentExDim = '2x2';
         let currentExStepIdx = 0;
         let currentPracDim = '2x2';
         let solverDim = 2;
+        let inverseDim = 2;
         let complexityChartInstance = null;
 
         // Helper to trigger MathJax re-render for dynamically updated content
@@ -622,6 +609,7 @@
             loadExample('2x2');
             switchPractice('2x2');
             setSolverDim(2);
+            setInverseDim(2);
             draw2DGeometryCanvas(2, 3, 8, 1, -2, -3, 1, 2);
             triggerMathJax();
         });
@@ -629,9 +617,10 @@
         // --- TAB SWITCHER ---
         function switchTab(tabId) {
             currentTab = tabId;
-            ['concept', 'examples', 'practice', 'solver'].forEach(t => {
+            ['concept', 'examples', 'practice', 'solver', 'inverse'].forEach(t => {
                 const sec = document.getElementById(`section-${t}`);
                 const btn = document.getElementById(`tab-${t}`);
+                if (!sec || !btn) return;
                 if (t === tabId) {
                     sec.classList.remove('hidden');
                     btn.className = "tab-btn px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all bg-indigo-600 text-white shadow";
@@ -644,6 +633,9 @@
             if (tabId === 'solver' && solverDim === 2) {
                 // Refresh geometry canvas rendering on view
                 setTimeout(runGaussianSolver, 50);
+            }
+            if (tabId === 'inverse') {
+                setTimeout(runInverseSolver, 50);
             }
             triggerMathJax();
         }
@@ -714,7 +706,45 @@
                 let cellsHtml = '';
                 for (let c = 0; c < numCols; c++) {
                     const isAugmentedVal = (c === numCols - 1);
+                    // Corrected: border-left creates vertical line divider between coefficients A and constants B
                     const borderClass = isAugmentedVal ? 'augmented-divider pl-3 pr-2 font-bold text-indigo-700' : 'px-2.5 text-slate-800';
+                    const formattedVal = Number.isInteger(matrix[r][c]) ? matrix[r][c] : Number(matrix[r][c]).toFixed(2);
+                    cellsHtml += `<td class="py-1.5 ${borderClass} text-center">${formattedVal}</td>`;
+                }
+                rowsHtml += `<tr class="${rowBg} transition-colors">${cellsHtml}</tr>`;
+            }
+
+            return `
+                <div class="matrix-bracket font-mono-code text-sm">
+                    <table class="border-collapse">
+                        <tbody>${rowsHtml}</tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        // --- MATRIX INVERSE HTML GENERATOR [A | I] ---
+        function buildAugmentedInverseMatrixHTML(matrix, dim, highlightRowIdx = -1) {
+            const numRows = matrix.length;
+            const numCols = matrix[0].length;
+
+            let rowsHtml = '';
+            for (let r = 0; r < numRows; r++) {
+                const isHighlight = (r === highlightRowIdx);
+                const rowBg = isHighlight ? 'bg-purple-100 text-purple-950 font-bold' : '';
+
+                let cellsHtml = '';
+                for (let c = 0; c < numCols; c++) {
+                    const isRightSide = (c >= dim);
+                    const isDividerCol = (c === dim);
+                    
+                    let borderClass = 'px-2.5 text-slate-800';
+                    if (isDividerCol) {
+                        borderClass = 'augmented-divider pl-3 pr-2.5 font-bold text-purple-700';
+                    } else if (isRightSide) {
+                        borderClass = 'px-2.5 text-purple-900 font-semibold';
+                    }
+
                     const formattedVal = Number.isInteger(matrix[r][c]) ? matrix[r][c] : Number(matrix[r][c]).toFixed(2);
                     cellsHtml += `<td class="py-1.5 ${borderClass} text-center">${formattedVal}</td>`;
                 }
@@ -1148,6 +1178,248 @@
             ctx.textAlign = 'center';
             ctx.fillText(msg, canvas.width / 2, canvas.height / 2);
             ctx.textAlign = 'start';
+        }
+
+        // --- GAUSS-JORDAN INVERSE SOLVER ENGINE ---
+        function setInverseDim(dim) {
+            inverseDim = dim;
+            const btn2 = document.getElementById('inverse-btn-2x2');
+            const btn3 = document.getElementById('inverse-btn-3x3');
+
+            if (dim === 2) {
+                btn2.className = "px-4 py-2 rounded-lg text-xs font-bold transition-all bg-white text-indigo-700 shadow-sm";
+                btn3.className = "px-4 py-2 rounded-lg text-xs font-bold transition-all text-slate-600 hover:text-slate-900";
+            } else {
+                btn3.className = "px-4 py-2 rounded-lg text-xs font-bold transition-all bg-white text-indigo-700 shadow-sm";
+                btn2.className = "px-4 py-2 rounded-lg text-xs font-bold transition-all text-slate-600 hover:text-slate-900";
+            }
+
+            buildInverseInputs();
+            runInverseSolver();
+        }
+
+        function buildInverseInputs() {
+            const grid = document.getElementById('inverse-input-grid');
+            grid.innerHTML = '';
+
+            let defaultVals = [];
+            if (inverseDim === 2) {
+                defaultVals = [
+                    [4, 7],
+                    [2, 6]
+                ];
+            } else {
+                defaultVals = [
+                    [1, 2, 3],
+                    [0, 1, 4],
+                    [5, 6, 0]
+                ];
+            }
+
+            for (let r = 0; r < inverseDim; r++) {
+                let rowHtml = `<div class="grid grid-cols-${inverseDim} gap-2">`;
+                for (let c = 0; c < inverseDim; c++) {
+                    const val = defaultVals[r] ? defaultVals[r][c] : 1;
+                    rowHtml += `<input type="number" id="inverse-cell-${r}-${c}" value="${val}" class="w-full px-2.5 py-2 border border-slate-300 rounded text-center text-xs font-mono font-semibold focus:ring-2 focus:ring-purple-500 outline-none" placeholder="a${r+1}${c+1}">`;
+                }
+                rowHtml += `</div>`;
+                grid.innerHTML += rowHtml;
+            }
+        }
+
+        function loadInversePreset(type) {
+            if (type === '2x2') {
+                setInverseDim(2);
+            } else if (type === '3x3') {
+                setInverseDim(3);
+            } else if (type === 'singular') {
+                setInverseDim(2);
+                document.getElementById('inverse-cell-0-0').value = 1;
+                document.getElementById('inverse-cell-0-1').value = 2;
+                document.getElementById('inverse-cell-1-0').value = 2;
+                document.getElementById('inverse-cell-1-1').value = 4;
+                runInverseSolver();
+            }
+        }
+
+        function resetInverseInputs() {
+            buildInverseInputs();
+            runInverseSolver();
+        }
+
+        function runInverseSolver() {
+            const n = inverseDim;
+            let A = [];
+            for (let r = 0; r < n; r++) {
+                let row = [];
+                for (let c = 0; c < n; c++) {
+                    const val = parseFloat(document.getElementById(`inverse-cell-${r}-${c}`).value) || 0;
+                    row.push(val);
+                }
+                A.push(row);
+            }
+
+            // Build [A | I]
+            let M = [];
+            for (let r = 0; r < n; r++) {
+                let row = [...A[r]];
+                for (let c = 0; c < n; c++) {
+                    row.push(r === c ? 1 : 0);
+                }
+                M.push(row);
+            }
+
+            const result = computeGaussJordanInverseSteps(M, n);
+
+            // Render Steps
+            const stepsOutput = document.getElementById('inverse-steps-output');
+            stepsOutput.innerHTML = '';
+
+            result.steps.forEach((s, idx) => {
+                stepsOutput.innerHTML += `
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2">
+                                <span class="bg-purple-600 text-white font-mono text-[10px] font-bold px-2 py-0.5 rounded">ขั้นที่ ${idx + 1}</span>
+                                <h4 class="font-bold text-slate-900 text-xs">${s.op}</h4>
+                            </div>
+                            <p class="text-xs text-slate-600">${s.desc}</p>
+                        </div>
+                        <div>
+                            ${buildAugmentedInverseMatrixHTML(s.matrix, n, s.highlightRow)}
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Final Result Card
+            const resultBox = document.getElementById('inverse-final-result-box');
+            resultBox.classList.remove('hidden');
+
+            if (!result.isInvertible) {
+                resultBox.className = "bg-rose-50 border border-rose-200 rounded-lg p-4 text-center space-y-2";
+                resultBox.innerHTML = `
+                    <div class="text-rose-700 font-bold text-sm">⚠️ เมทริกซ์นี้ไม่มีอินเวิร์ส (Non-Invertible / Singular Matrix)</div>
+                    <div class="text-rose-600 text-xs">เนื่องจากเกิดแถวที่เป็นศูนย์ทั้งหมดในฝั่งซ้ายของเมทริกซ์แต่งเติม (Determinant = 0)</div>
+                `;
+            } else {
+                resultBox.className = "bg-purple-50 border border-purple-200 rounded-lg p-4 text-center space-y-3";
+                
+                // Format Inverse Matrix HTML
+                const invMatHtml = buildMatrixHTML(result.inverseMatrix);
+
+                resultBox.innerHTML = `
+                    <div class="text-purple-950 font-bold text-sm flex items-center justify-center gap-1">
+                        <span>✨</span> คำตอบ: เมทริกซ์ผกผัน (A⁻¹)
+                    </div>
+                    <div class="flex justify-center my-2">
+                        ${invMatHtml}
+                    </div>
+                    <div class="text-[11px] text-purple-800 font-medium">
+                        ✓ ตรวจสอบคำตอบ: A × A⁻¹ = I (เมทริกซ์เอกลักษณ์)
+                    </div>
+                `;
+            }
+
+            triggerMathJax();
+        }
+
+        function computeGaussJordanInverseSteps(initialAugmentedMat, n) {
+            let steps = [];
+            let M = initialAugmentedMat.map(row => [...row]);
+            let isInvertible = true;
+
+            steps.push({
+                op: "ตั้งเมทริกซ์แต่งเติมเริ่มต้น [A | I]",
+                desc: `นำเมทริกซ์ A ขนาด ${n}x${n} มาต่อด้วยเมทริกซ์เอกลักษณ์ I${n}`,
+                matrix: cloneMatrix(M),
+                highlightRow: -1
+            });
+
+            for (let col = 0; col < n; col++) {
+                // Find pivot
+                let maxRow = col;
+                for (let r = col + 1; r < n; r++) {
+                    if (Math.abs(M[r][col]) > Math.abs(M[maxRow][col])) {
+                        maxRow = r;
+                    }
+                }
+
+                // Check singularity
+                if (Math.abs(M[maxRow][col]) < 1e-9) {
+                    isInvertible = false;
+                    steps.push({
+                        op: `พบหลักที่ ${col+1} มีสมาชิกเป็นศูนย์ทั้งหมด`,
+                        desc: "ไม่สามารถหาตัวคูณหลัก (Pivot) ได้ เมทริกซ์นี้จึงไม่มีอินเวิร์ส",
+                        matrix: cloneMatrix(M),
+                        highlightRow: col
+                    });
+                    break;
+                }
+
+                // Swap rows if necessary
+                if (maxRow !== col) {
+                    let temp = M[col];
+                    M[col] = M[maxRow];
+                    M[maxRow] = temp;
+                    steps.push({
+                        op: `สลับแถว R${col+1} ↔ R${maxRow+1}`,
+                        desc: `สลับแถวเพื่อให้ตำแหน่งตัวคูณหลัก (Pivot) มีค่าสูงขึ้น`,
+                        matrix: cloneMatrix(M),
+                        highlightRow: col
+                    });
+                }
+
+                // Scale pivot row to 1
+                let pivot = M[col][col];
+                if (Math.abs(pivot - 1) > 1e-9) {
+                    for (let c = 0; c < 2 * n; c++) {
+                        M[col][c] /= pivot;
+                    }
+                    steps.push({
+                        op: `R${col+1} → (1 / ${formatNum(pivot)}) R${col+1}`,
+                        desc: `ปรับสมาชิกนำของแถวที่ ${col+1} ให้เป็น 1`,
+                        matrix: cloneMatrix(M),
+                        highlightRow: col
+                    });
+                }
+
+                // Eliminate ALL OTHER rows (both above and below) for Gauss-Jordan
+                for (let r = 0; r < n; r++) {
+                    if (r !== col) {
+                        let factor = M[r][col];
+                        if (Math.abs(factor) > 1e-9) {
+                            for (let c = 0; c < 2 * n; c++) {
+                                M[r][c] -= factor * M[col][c];
+                            }
+                            steps.push({
+                                op: `R${r+1} → R${r+1} - (${formatNum(factor)}) R${col+1}`,
+                                desc: `กำจัดสมาชิกในหลักที่ ${col+1} ของแถวที่ ${r+1} ให้เป็น 0`,
+                                matrix: cloneMatrix(M),
+                                highlightRow: r
+                            });
+                        }
+                    }
+                }
+            }
+
+            // Extract Inverse Matrix (right half)
+            let inverseMatrix = [];
+            if (isInvertible) {
+                for (let r = 0; r < n; r++) {
+                    let row = [];
+                    for (let c = n; c < 2 * n; c++) {
+                        row.push(M[r][c]);
+                    }
+                    inverseMatrix.push(row);
+                }
+            }
+
+            return {
+                steps: steps,
+                isInvertible: isInvertible,
+                inverseMatrix: inverseMatrix
+            };
         }
 
         // --- CHART.JS INITIALIZATION ---
