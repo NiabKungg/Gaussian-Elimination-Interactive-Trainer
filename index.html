@@ -3,11 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Gaussian Elimination Interactive Explorer & Solver</title>
+    <title>Gaussian Elimination Interactive Explorer & Solver</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- MathJax CDN for rendering LaTeX expressions dynamically -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
@@ -77,7 +90,6 @@
         3. Practice & Self-Assessment (โจทย์ซ้อมมือและแบบทดสอบ): Interactive problem solver allowing students to type answers for 2x2 and 3x3 practice problems, request step hints, or unlock full derivation.
         4. Live Solver & 2D Line Visualizer (เครื่องมือแก้โจทย์และกราฟ 2D): Users can input custom linear equations to generate row operations dynamically. For 2x2 systems, a HTML5 Canvas 2D plot renders line intersections visually.
         5. Operations Complexity Analytics: Includes a Chart.js bar graph comparing theoretical vs actual operations across matrix dimensions.
-        This structure provides a logical progression from theory to guided observation, hands-on practice, and open exploration.
     -->
 
     <!-- Visualization & Content Choices:
@@ -141,7 +153,7 @@
                         </div>
                         <h3 class="font-bold text-slate-900 text-base mb-2">เมทริกซ์แต่งเติม (Augmented Matrix)</h3>
                         <p class="text-xs text-slate-600 leading-relaxed mb-3">
-                            เขียนสัมประสิทธิ์และค่าคงที่ของระบบสมการ $AX = B$ ให้อยู่ในรูปเมทริกซ์ผสาน $[A \mid B]$ เพื่อเตรียมคำนวณ
+                            เขียนสัมประสิทธิ์และค่าคงที่ของระบบสมการ <span class="font-mono font-bold text-indigo-700">AX = B</span> ให้อยู่ในรูปเมทริกซ์ผสาน <span class="font-mono font-bold text-indigo-700">[A | B]</span> เพื่อเตรียมคำนวณ
                         </p>
                         <div class="bg-white p-3 rounded-lg border border-slate-200 text-center font-mono-code text-xs text-slate-700">
                             [ a<sub>1</sub>  b<sub>1</sub> | c<sub>1</sub> ]<br>
@@ -159,9 +171,9 @@
                             ใช้ 3 กฎทองเพื่อแปลงเมทริกซ์โดยไม่เปลี่ยนคำตอบของระบบสมการ:
                         </p>
                         <ul class="text-xs text-slate-600 space-y-1.5 font-medium">
-                            <li class="flex items-center gap-1.5"><span class="text-teal-600 font-bold">1.</span> สลับแถว ($R_i \leftrightarrow R_j$)</li>
-                            <li class="flex items-center gap-1.5"><span class="text-teal-600 font-bold">2.</span> คูณแถวด้วยสเกลาร์ $c \neq 0$ ($c R_i$)</li>
-                            <li class="flex items-center gap-1.5"><span class="text-teal-600 font-bold">3.</span> บวกพหุคูณแถว ($R_i + c R_j$)</li>
+                            <li class="flex items-center gap-1.5"><span class="text-teal-600 font-bold">1.</span> สลับแถว (<span class="font-mono text-slate-800 font-semibold">R<sub>i</sub> ↔ R<sub>j</sub></span>)</li>
+                            <li class="flex items-center gap-1.5"><span class="text-teal-600 font-bold">2.</span> คูณแถวด้วยสเกลาร์ <span class="font-mono text-slate-800 font-semibold">c ≠ 0</span> (<span class="font-mono text-slate-800 font-semibold">c R<sub>i</sub></span>)</li>
+                            <li class="flex items-center gap-1.5"><span class="text-teal-600 font-bold">3.</span> บวกพหุคูณแถว (<span class="font-mono text-slate-800 font-semibold">R<sub>i</sub> + c R<sub>j</sub></span>)</li>
                         </ul>
                     </div>
 
@@ -434,7 +446,7 @@
                         </div>
 
                         <p class="text-[11px] text-slate-500 mt-3 text-center">
-                            เส้นกราฟแสดงสมการป้อนเข้า 2 เส้น โดยจุดตัดบนระนาบ $XY$ (จุดสีส้ม) คือคำตอบคำนวณได้ของระบบสมการ
+                            เส้นกราฟแสดงสมการป้อนเข้า 2 เส้น โดยจุดตัดบนระนาบ <b>XY</b> (จุดสีส้ม) คือคำตอบคำนวณได้ของระบบสมการ
                         </p>
                     </div>
                 </div>
@@ -457,7 +469,7 @@
     <footer class="bg-slate-900 text-slate-400 text-xs py-6 border-t border-slate-800 mt-12">
         <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
             <p class="font-medium text-slate-300">สื่อการเรียนรู้อินเทอร์แอคทีฟเรื่องการขจัดแบบเก๊าส์ (Gaussian Elimination Interactive Explorer)</p>
-            <p class="text-slate-500">พัฒนาด้วย HTML5, Tailwind CSS, Vanilla JS และ Chart.js (ไม่มีการใช้ SVG หรือ Mermaid JS)</p>
+            <p class="text-slate-500">พัฒนาด้วย HTML5, Tailwind CSS, Vanilla JS, MathJax และ Chart.js (ไม่มีการใช้ SVG หรือ Mermaid JS)</p>
         </div>
     </footer>
 
@@ -597,6 +609,13 @@
         let solverDim = 2;
         let complexityChartInstance = null;
 
+        // Helper to trigger MathJax re-render for dynamically updated content
+        function triggerMathJax() {
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                window.MathJax.typesetPromise().catch(err => console.log('MathJax error:', err));
+            }
+        }
+
         // --- INITIALIZATION ON DOM LOAD ---
         document.addEventListener('DOMContentLoaded', () => {
             initComplexityChart();
@@ -604,6 +623,7 @@
             switchPractice('2x2');
             setSolverDim(2);
             draw2DGeometryCanvas(2, 3, 8, 1, -2, -3, 1, 2);
+            triggerMathJax();
         });
 
         // --- TAB SWITCHER ---
@@ -625,6 +645,7 @@
                 // Refresh geometry canvas rendering on view
                 setTimeout(runGaussianSolver, 50);
             }
+            triggerMathJax();
         }
 
         // --- EXAMPLE STEPPER LOGIC ---
@@ -663,6 +684,7 @@
             // Render Matrix HTML
             const matrixHtml = buildMatrixHTML(step.matrix, step.highlightRow);
             document.getElementById('ex-matrix-render').innerHTML = matrixHtml;
+            triggerMathJax();
         }
 
         function nextExStep() {
@@ -764,6 +786,7 @@
             document.getElementById('prac-hint-box').classList.add('hidden');
             document.getElementById('prac-solution-body').classList.add('hidden');
             document.getElementById('sol-toggle-icon').innerText = '▼';
+            triggerMathJax();
         }
 
         function checkPracticeAnswer() {
@@ -792,6 +815,7 @@
 
         function toggleHint() {
             document.getElementById('prac-hint-box').classList.toggle('hidden');
+            triggerMathJax();
         }
 
         function toggleSolution() {
@@ -804,6 +828,7 @@
                 solBody.classList.add('hidden');
                 icon.innerText = '▼';
             }
+            triggerMathJax();
         }
 
         // --- CUSTOM SOLVER ENGINE & 2D GRAPHICS ---
@@ -923,6 +948,7 @@
             } else {
                 clear2DCanvas("กราฟ 2D รองรับเฉพาะระบบสมการ 2x2");
             }
+            triggerMathJax();
         }
 
         function computeGaussianSteps(inputMat) {
